@@ -1,0 +1,31 @@
+name: testing
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+    - main
+  workflow_dispatch:
+
+jobs:
+  if_merged:
+    if: github.event.pull_request.merged == true
+    runs-on: [self-hosted, linux, general]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3   
+      
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: 3.11
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyyaml
+
+    - name: Run Python Script
+      run: |
+        python yml2json.py gti_artemis.yml
+        python yml2json.py preprod_gti_artemis.yml
